@@ -1,10 +1,18 @@
 package com.training.generics;
 
+import java.io.File;
+import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.testng.Assert;
+import org.testng.ITestContext;
+import org.testng.ITestResult;
 
 /**
  * 
@@ -81,4 +89,44 @@ public class GenericMethods {
 	public boolean checkSingleEntry(String locator, String type){
 		return getElementsAsList(locator, type).size() ==1;
 	}
+	public void assertURL(String expectedURL) {
+		String actualURL = driver.getCurrentUrl();
+		System.out.println("The URL at runtime is "+actualURL);
+		Assert.assertTrue(actualURL.equals(expectedURL), "The assertion failed as the expected URL did not match with actual URL");
+	}
+	
+	public void assertText(String expectedText, String locator, String type, String msg) {
+		type = type.toLowerCase();
+		
+		if(type.equals("id")){
+			String actualText = driver.findElement(By.id(locator)).getText();
+			Assert.assertTrue(actualText.equals(expectedText),msg );
+		}else if(type.equals("class")){
+			String actualText = driver.findElement(By.className(locator)).getText();
+			Assert.assertTrue(actualText.equals(expectedText),msg );
+		}else if(type.equals("name")){
+			String actualText = driver.findElement(By.name(locator)).getText();
+			Assert.assertTrue(actualText.equals(expectedText),msg );
+		}else if(type.equals("xpath")){
+			String actualText = driver.findElement(By.xpath(locator)).getText();
+			Assert.assertTrue(actualText.equals(expectedText),msg );
+		}else if(type.equals("css")){
+			String actualText = driver.findElement(By.cssSelector(locator)).getText();
+			Assert.assertTrue(actualText.equals(expectedText),msg );
+		}else if(type.equals("tagname")){
+			String actualText = driver.findElement(By.tagName(locator)).getText();
+			Assert.assertTrue(actualText.equals(expectedText),msg );
+		}else if(type.equals("linktext")){
+			String actualText = driver.findElement(By.linkText(locator)).getText();
+			Assert.assertTrue(actualText.equals(expectedText),msg );
+		}else if(type.equals("partiallinktext")){
+			String actualText = driver.findElement(By.partialLinkText(locator)).getText();
+			Assert.assertTrue(actualText.equals(expectedText),msg );
+		}
+		
+	}
 }
+
+	
+
+

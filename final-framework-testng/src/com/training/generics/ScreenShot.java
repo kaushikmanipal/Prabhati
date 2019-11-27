@@ -3,6 +3,7 @@ package com.training.generics;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.apache.commons.io.FileUtils;
@@ -10,6 +11,7 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebDriverException;
+import org.testng.ITestResult;
 
 
 /**
@@ -30,7 +32,7 @@ public class ScreenShot {
 	public void captureScreenShot(){
 		
 		// to be changed 
-		String path = "C:\\Users\\Naveen\\Desktop\\screenshots\\";
+		String path = System.getProperty("user.dir")+"\\StepwiseScreenshot\\";
 		String fileName ="";
 
 		GregorianCalendar calendar = new GregorianCalendar(); 
@@ -66,7 +68,7 @@ public class ScreenShot {
 
 	public void captureScreenShot(String fileName){
 		
-		String path =  "C:\\Users\\Naveen\\Desktop\\screenshots\\";
+		String path =  System.getProperty("user.dir")+"\\StepwiseScreenshot\\";
 	
 		// 1. create file 
 		// 2. capture screenshot from selenium 
@@ -83,7 +85,57 @@ public class ScreenShot {
 			e.printStackTrace();
 		}
 		
+	}
+		
+		public void tearDown(ITestResult result) throws InterruptedException {
+		
+			/*System.out.println("After Method running");
+			int a = result.FAILURE;// 2
+			System.out.println(a);
+
+			int b = result.SKIP;// 3
+			System.out.println(b);
+
+			int c = result.SUCCESS;// 1
+			System.out.println(c);
+
+			int d = result.getStatus();// 2
+			System.out.println(d);*/
+
+			// getStatus will give the status of test annotation method
+			// Status can be pass , fail, skip
+			// Actual status
+			if (result.getStatus() == result.FAILURE) {
+				// Name of the Test annotation which has failed
+				FailScreenshot(result.getName());
+				Throwable t = result.getThrowable();
+				System.out.println(t.getMessage());
+			}
+
+			Thread.sleep(1000);
+			driver.quit();
+		}
+
+
+
+		public void FailScreenshot(String stepName) {
+
+			try {
+				Date d = new Date();
+				String timeStamp = d.toString().replace(":", "_").replace(" ", "_");
+				TakesScreenshot scr = (TakesScreenshot) driver;
+				File f1 = scr.getScreenshotAs(OutputType.FILE);
+				File f2 = new File(System.getProperty("user.dir") + "\\FailScreenshot\\" + timeStamp + "_" + stepName + ".png");
+				// Copy the screenshot from f1 to f2 location
+				FileUtils.copyFile(f1, f2);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+		
+
 		
 	}
 	
-}
+
